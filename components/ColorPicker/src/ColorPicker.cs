@@ -133,7 +133,7 @@ public partial class ColorPicker : Microsoft.UI.Xaml.Controls.ColorPicker
         this.CheckerBackgroundColor = (Color)Application.Current.Resources["SystemListLowColor"];
 
         this.ConnectCallbacks(true);
-        this.SetDefaultPalette();
+        this.UpdateColorPalette();
         this.StartDispatcherQueueTimer();
         this.RegisterPropertyChangedCallback(IsColorChannelTextInputVisibleProperty, OnPanelVisibilityChanged);
         this.RegisterPropertyChangedCallback(IsColorSpectrumVisibleProperty, OnPanelVisibilityChanged);
@@ -961,16 +961,6 @@ public partial class ColorPicker : Microsoft.UI.Xaml.Controls.ColorPicker
     }
 
     /// <summary>
-    /// Sets the default color palette to the control.
-    /// </summary>
-    private void SetDefaultPalette()
-    {
-        this.CustomPalette = new FluentColorPalette();
-
-        return;
-    }
-
-    /// <summary>
     /// Validates and updates the current 'tab' or 'panel' selection.
     /// If the currently selected tab is collapsed, the next visible tab will be selected.
     /// </summary>
@@ -1027,21 +1017,7 @@ public partial class ColorPicker : Microsoft.UI.Xaml.Controls.ColorPicker
 
             if (object.ReferenceEquals(args.Property, CustomPaletteProperty))
             {
-                IColorPalette palette = this.CustomPalette;
-
-                if (palette != null)
-                {
-                    this.CustomPaletteColumnCount = palette.ColorCount;
-                    this.CustomPaletteColors.Clear();
-
-                    for (int shadeIndex = 0; shadeIndex < palette.ShadeCount; shadeIndex++)
-                    {
-                        for (int colorIndex = 0; colorIndex < palette.ColorCount; colorIndex++)
-                        {
-                            this.CustomPaletteColors.Add(palette.GetColor(colorIndex, shadeIndex));
-                        }
-                    }
-                }
+                this.UpdateColorPalette();
             }
             else if (object.ReferenceEquals(args.Property, IsColorPaletteVisibleProperty))
             {
@@ -1051,6 +1027,25 @@ public partial class ColorPicker : Microsoft.UI.Xaml.Controls.ColorPicker
         }
 
         return;
+    }
+
+    private void UpdateColorPalette()
+    {
+        IColorPalette palette = this.CustomPalette;
+
+        if (palette != null)
+        {
+            this.CustomPaletteColumnCount = palette.ColorCount;
+            this.CustomPaletteColors.Clear();
+
+            for (int shadeIndex = 0; shadeIndex < palette.ShadeCount; shadeIndex++)
+            {
+                for (int colorIndex = 0; colorIndex < palette.ColorCount; colorIndex++)
+                {
+                    this.CustomPaletteColors.Add(palette.GetColor(colorIndex, shadeIndex));
+                }
+            }
+        }
     }
 
     /***************************************************************************************
@@ -1174,7 +1169,6 @@ public partial class ColorPicker : Microsoft.UI.Xaml.Controls.ColorPicker
              border,
              CheckerBackgroundColor);
         }
-       
     }
 
     /// <summary>

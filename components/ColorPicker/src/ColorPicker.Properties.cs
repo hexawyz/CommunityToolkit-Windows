@@ -66,7 +66,7 @@ public partial class ColorPicker
             typeof(IColorPalette),
             typeof(ColorPicker),
             new PropertyMetadata(
-                null,
+                new FluentColorPalette(),
                 (s, e) => (s as ColorPicker)?.OnDependencyPropertyChanged(s, e)));
 
     /// <summary>
